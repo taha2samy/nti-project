@@ -108,5 +108,5 @@ This will remove all Kubernetes deployments, services, and other resources assoc
 This setup enables you to deploy a 3-tier Node.js application using Kubernetes, offering scalability and containerization benefits for each layer of the application (frontend, backend, and database). Ensure to modify the environment variables and configurations based on your specific needs.
 
 For more information on Kubernetes, refer to the [Kubernetes Documentation](https://kubernetes.io/docs/).
-```
+
 
