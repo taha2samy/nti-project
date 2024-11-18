@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  namespace: default
+data:
+  MONGO_URI: "mongodb://admin:admin@mongodb-service:27017/admin"
+  APP_PORT: "3001"

@@ -1,0 +1,45 @@
+version: "3.8"
+
+services:
+  backend:
+    build: ./3tier-nodejs/backend
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://admin:admin@mongodb:27017/admin
+    networks:
+      - mongo_net
+
+  frontend:
+    build: ./3tier-nodejs/frontend
+    environment:
+      - REACT_APP_API_URL=http://localhost:3001/api
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - mongo_net
+
+  mongodb:
+    image: mongo
+    environment:
+      - MONGO_INITDB_DATABASE=admin
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
+      - MONGO_INITDB_CREATE_DATABASE=mydb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - mongo_net
+
+volumes:
+  mongodb_data:
+
+networks:
+  mongo_net:
+    driver: bridge
