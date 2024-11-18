@@ -1,6 +1,3 @@
-Here’s an example of a professional `README.md` file for your Kubernetes setup:
-
-```markdown
 # Kubernetes Deployment for 3-Tier Node.js Application
 
 This repository contains the necessary configurations and Kubernetes manifests to deploy a 3-tier Node.js application on Kubernetes. The application consists of a frontend (React), backend (Node.js), and a MongoDB database. The setup is optimized for scalability, maintainability, and ease of deployment.
@@ -113,4 +110,3 @@ This setup enables you to deploy a 3-tier Node.js application using Kubernetes, 
 For more information on Kubernetes, refer to the [Kubernetes Documentation](https://kubernetes.io/docs/).
 ```
 
-This README gives a clear, professional structure for setting up and managing your Kubernetes deployment. It includes prerequisites, step-by-step instructions, and troubleshooting tips, which is useful for both developers and operators working with the system.
