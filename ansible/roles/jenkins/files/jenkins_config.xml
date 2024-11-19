@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<hudson>
+    <nodeProperties/>
+    <scmCheckoutRetryCount>0</scmCheckoutRetryCount>
+    <numExecutors>2</numExecutors>
+    <mode>EXCLUSIVE</mode>
+    <useSecurity>true</useSecurity>
+    <securityRealm class="hudson.security.HudsonPrivateSecurityRealm">
+        <disableSignup>false</disableSignup>
+        <adminUserNames>admin</adminUserNames>
+        <adminPassword>admin</adminPassword>
+    </securityRealm>
+    <authorizationStrategy class="hudson.security.FullControlOnceLoggedInAuthorizationStrategy">
+        <denyAnonymousReadAccess>false</denyAnonymousReadAccess>
+    </authorizationStrategy>
+    <agentProtocols>
+        <string>JNLP4-connect</string>
+        <string>Ping</string>
+    </agentProtocols>
+</hudson>

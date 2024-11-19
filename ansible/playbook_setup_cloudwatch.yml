@@ -1,0 +1,10 @@
+- name: Configure CloudWatch Agent with dynamic intervals
+  hosts: all
+  become: yes
+  roles:
+    - cloudwatch
+  vars:
+    agent_interval: 90
+    cpu_interval: 30
+    disk_interval: 120
+    mem_interval: 45

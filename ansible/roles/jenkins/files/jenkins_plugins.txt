@@ -1,0 +1,4 @@
+git
+pipeline
+workflow-aggregator
+docker

@@ -1,0 +1,55 @@
+- name: Add Jenkins repository key
+  apt_key:
+    url: https://pkg.jenkins.io/debian-stable/jenkins.io.key
+    state: present
+
+- name: Add Jenkins repository
+  apt_repository:
+    repo: deb http://pkg.jenkins.io/debian-stable binary/
+    state: present
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+- name: Install Jenkins
+  apt:
+    name: jenkins
+    state: present
+
+- name: Start and enable Jenkins service
+  systemd:
+    name: jenkins
+    enabled: yes
+    state: started
+    
+- name: Copy Jenkins configuration
+  copy:
+    src: jenkins_plugins.txt
+    dest: /var/lib/jenkins/jenkins_plugins.txt
+    owner: jenkins
+    group: jenkins
+    mode: '0644'
+
+- name: Install Jenkins plugins
+  shell: |
+    wget -q -O /tmp/jenkins-cli.jar http://localhost:8080/jnlpJars/jenkins-cli.jar
+    cat /var/lib/jenkins/jenkins_plugins.txt | while read plugin; do
+        java -jar /tmp/jenkins-cli.jar -s http://localhost:8080/ install-plugin $plugin
+    done
+    java -jar /tmp/jenkins-cli.jar -s http://localhost:8080/ safe-restart
+
+- name: Copy Jenkins configuration
+  copy:
+    src: jenkins_config.xml
+    dest: /var/lib/jenkins/config.xml
+    owner: jenkins
+    group: jenkins
+    mode: '0644'
+  notify: restart jenkins
+
+
+- name: Restart Jenkins service
+  systemd:
+    name: jenkins
+    state: restarted
