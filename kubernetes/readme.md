@@ -98,11 +98,11 @@ kubectl delete -f kubernetes/
 
 This will remove all Kubernetes deployments, services, and other resources associated with the project.
 
-## Notes
-
-- If you're using a cloud provider like GKE, EKS, or AKS, ensure that you have the necessary external IP configurations to access the application externally.
-- The frontend is configured to communicate with the backend API via environment variables defined in the ConfigMap. Make sure that the `REACT_APP_API_URL` variable points to the correct backend URL.
-
+> [!TIP]
+>
+>- If you're using a cloud provider like GKE, EKS, or AKS, ensure that you have the necessary external IP configurations to access the application externally.
+>- The frontend is configured to communicate with the backend API via environment variables defined in the ConfigMap. Make sure that the `REACT_APP_API_URL` variable points to the correct backend URL.
+>
 ## Conclusion
 
 This setup enables you to deploy a 3-tier Node.js application using Kubernetes, offering scalability and containerization benefits for each layer of the application (frontend, backend, and database). Ensure to modify the environment variables and configurations based on your specific needs.
