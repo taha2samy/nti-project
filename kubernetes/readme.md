@@ -7,7 +7,6 @@ This repository contains the necessary configurations and Kubernetes manifests t
 ```plaintext
 kubernetes/
 ├── configmaps/
-│   ├── application-configmap.yaml    # ConfigMap for general application settings
 │   ├── backend-configmap.yaml       # ConfigMap for backend environment variables
 │   └── frontend-configmap.yaml      # ConfigMap for frontend environment variables
 ├── deployments/
@@ -40,7 +39,6 @@ ConfigMaps store configuration data for the backend, frontend, and general appli
 ```bash
 kubectl apply -f kubernetes/configmaps/backend-configmap.yaml
 kubectl apply -f kubernetes/configmaps/frontend-configmap.yaml
-kubectl apply -f kubernetes/configmaps/application-configmap.yaml
 ```
 
 ### 2. Apply Deployments
