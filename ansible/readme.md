@@ -139,3 +139,157 @@ If you run into issues, here are some common problems and solutions:
 
 ---
 
+
+Sure! Below is a detailed `README.md` file for **Task 2**, assuming this task is related to setting up CloudWatch monitoring using Ansible (based on the provided tasks).
+
+---
+
+# Task 2: CloudWatch Agent Installation and Configuration
+
+This task automates the installation and configuration of the **Amazon CloudWatch Agent** on your EC2 instances or other Linux servers using Ansible. The CloudWatch Agent collects system metrics such as CPU, memory, and disk usage and sends them to Amazon CloudWatch for monitoring.
+
+### Flowchart Diagram
+
+Below is a flowchart that represents the steps of Task 2's CloudWatch Agent setup. The playbook ensures that the required dependencies are installed, the CloudWatch Agent package is downloaded and installed, configuration is deployed, and the service is started and enabled.
+
+![alt](mermaid-diagram-2024-11-21-233516.svg)
+---
+
+## Instructions for Running the Playbook
+
+Follow these steps to execute the Ansible playbook that installs and configures the CloudWatch Agent:
+
+### 1. Modify the `inventory.ini` File
+
+Before running the playbook, update the `inventory.ini` file with the correct details of the target server(s).
+
+Example `inventory.ini` file:
+
+```ini
+[cloudwatch_server]
+your-server-name ansible_host=<YOUR_SERVER_IP> ansible_user=<USER> ansible_ssh_private_key_file=<PATH_TO_PRIVATE_KEY>
+```
+
+- Replace `<YOUR_SERVER_IP>` with the IP address or hostname of the target server.
+- Replace `<USER>` with the appropriate SSH username (e.g., `ec2` for EC2 instances).
+- Replace `<PATH_TO_PRIVATE_KEY>` with the path to your SSH private key file that grants access to the server.
+
+### 2. Run the Playbook
+
+To run the playbook and install the CloudWatch Agent, use the following command:
+
+```bash
+ansible-playbook -i inventory.ini roles/cloudwatch/tasks/main.yml
+```
+
+This command tells Ansible to use the `inventory.ini` file for host details and execute the `main.yml` playbook under the `roles/cloudwatch/tasks/` directory.
+
+### 3. Verify CloudWatch Agent Installation
+
+After running the playbook successfully, verify that the CloudWatch Agent is installed and running by checking its status:
+
+```bash
+sudo systemctl status amazon-cloudwatch-agent
+```
+
+If everything is set up correctly, you should see the service status as `active (running)`.
+
+### 4. Configure the CloudWatch Agent
+
+- The playbook automatically deploys a configuration template (`config.json.j2`) to the target system. This template is used to configure the CloudWatch Agent to collect specific system metrics such as CPU, memory, and disk usage.
+
+### 5. Monitor CloudWatch Metrics
+
+Once the agent is running, you can monitor the collected metrics in the Amazon CloudWatch console.
+
+- Go to the **CloudWatch Metrics** section of the AWS Console.
+- Look for the instance and metrics you configured, such as **CPU Utilization**, **Disk Usage**, and **Memory Usage**.
+
+---
+
+## Playbook Breakdown
+
+### Step 1: Install Dependencies
+
+The playbook first ensures that the required dependencies (such as `wget` and `unzip`) are installed on the target system.
+
+```yaml
+- name: Install required dependencies
+  ansible.builtin.package:
+    name:
+      - wget
+      - unzip
+    state: present
+```
+
+### Step 2: Download the CloudWatch Agent Package
+
+The playbook then downloads the appropriate CloudWatch Agent package for the system:
+
+- For **Debian-based** systems, it downloads the `.deb` package.
+- For **RHEL-based** systems, it downloads the `.rpm` package.
+
+```yaml
+# For Debian-based systems
+- name: Download CloudWatch Agent package for Debian-based systems
+  ansible.builtin.get_url:
+    url: https://s3.amazonaws.com/amazoncloudwatch-agent/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb
+    dest: /tmp/amazon-cloudwatch-agent.deb
+  when: ansible_facts['os_family'] == "Debian"
+
+# For RHEL-based systems
+- name: Download CloudWatch Agent package for RHEL-based systems
+  ansible.builtin.get_url:
+    url: https://s3.amazonaws.com/amazoncloudwatch-agent/redhat/amd64/latest/amazon-cloudwatch-agent.rpm
+    dest: /tmp/amazon-cloudwatch-agent.rpm
+  when: ansible_facts['os_family'] == "RedHat"
+```
+
+### Step 3: Install the CloudWatch Agent
+
+The downloaded CloudWatch Agent package is installed using the appropriate package manager (`apt` for Debian or `yum` for RHEL).
+
+```yaml
+# For Debian-based systems
+- name: Install CloudWatch Agent on Debian-based systems
+  ansible.builtin.apt:
+    deb: /tmp/amazon-cloudwatch-agent.deb
+    state: present
+  when: ansible_facts['os_family'] == "Debian"
+
+# For RHEL-based systems
+- name: Install CloudWatch Agent on RHEL-based systems
+  ansible.builtin.yum:
+    name: /tmp/amazon-cloudwatch-agent.rpm
+    state: present
+  when: ansible_facts['os_family'] == "RedHat"
+```
+
+### Step 4: Deploy CloudWatch Agent Configuration
+
+This task uses a Jinja2 template (`config.json.j2`) to create the CloudWatch Agent configuration file, which specifies the metrics to collect and other agent settings.
+
+```yaml
+- name: Deploy CloudWatch Agent configuration
+  ansible.builtin.template:
+    src: config.json.j2
+    dest: /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
+    owner: root
+    group: root
+    mode: '0644'
+```
+
+### Step 5: Start and Enable the CloudWatch Agent Service
+
+Finally, the playbook starts the CloudWatch Agent service and enables it to start automatically upon boot.
+
+```yaml
+- name: Start and enable CloudWatch Agent service
+  ansible.builtin.systemd:
+    name: amazon-cloudwatch-agent
+    enabled: yes
+    state: started
+```
+
+---
+
