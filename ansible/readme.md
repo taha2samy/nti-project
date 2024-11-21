@@ -25,7 +25,7 @@ The flowchart below shows the steps that the Ansible playbook performs when sett
 ### Flowchart Diagram
 
 *This image should be generated using the following Mermaid code (or similar tool) to visualize the flow:
-![alt text](mermaid-diagram-2024-11-21-213659.svg)
+![alt text](mermaid-diagram-2024-11-21-214909.svg)
 ### Instructions for Running the Playbook
 
 
