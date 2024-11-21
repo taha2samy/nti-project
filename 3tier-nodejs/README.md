@@ -77,7 +77,7 @@ networks:
 ## Visualization of the Architecture
 
 The following diagram provides a visual representation of the Docker Compose setup, showing the relationships between the services, networks, and volumes:
-![alt text](<docker-compose-graph (4).svg>)
+![alt text](<docker-compose-graph (3).svg>)
 
 
 ## Dockerfiles: Building the Images
