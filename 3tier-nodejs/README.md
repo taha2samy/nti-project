@@ -144,6 +144,3 @@ The named volume (`mongodb_data`) will persist its data even after running `dock
 docker-compose down -v 
 ```
 
-
-
-This comprehensive README provides a thorough explanation of the 3-tier architecture, the Docker Compose setup, visualization, Dockerfiles, and how to run and manage the application. Remember to replace "[PLACEHOLDER FOR GRAPH IMAGE]" with the generated visualization of your docker-compose file.
