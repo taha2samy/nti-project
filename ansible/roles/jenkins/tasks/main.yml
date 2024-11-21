@@ -1,55 +1,85 @@
+---
+# Step 1: Update package manager cache
+- name: Update package manager cache
+  ansible.builtin.package:
+    name: "*"
+    state: latest
+
+# Step 2: Install dependencies (Java, wget, curl)
+- name: Install dependencies
+  ansible.builtin.package:
+    name:
+      - openjdk-11-jdk # Java dependency
+      - wget           # Required for downloading Jenkins key
+      - curl           # Optional utility
+    state: present
+
+# Step 3: Add Jenkins repository key and repository (Debian-based systems)
 - name: Add Jenkins repository key
-  apt_key:
+  ansible.builtin.apt_key:
     url: https://pkg.jenkins.io/debian-stable/jenkins.io.key
     state: present
+  when: ansible_facts['os_family'] == "Debian"
 
 - name: Add Jenkins repository
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: deb http://pkg.jenkins.io/debian-stable binary/
     state: present
+  when: ansible_facts['os_family'] == "Debian"
 
 - name: Update apt cache
-  apt:
+  ansible.builtin.apt:
     update_cache: yes
+  when: ansible_facts['os_family'] == "Debian"
 
+# Step 4: Add Jenkins repository (RHEL-based systems)
+- name: Add Jenkins repository for RHEL-based systems
+  ansible.builtin.yum_repository:
+    name: jenkins
+    description: Jenkins Repository
+    baseurl: http://pkg.jenkins.io/redhat-stable/
+    gpgcheck: yes
+    gpgkey: https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+    enabled: yes
+  when: ansible_facts['os_family'] == "RedHat"
+
+# Step 5: Install Jenkins
 - name: Install Jenkins
-  apt:
+  ansible.builtin.package:
     name: jenkins
     state: present
 
-- name: Start and enable Jenkins service
-  systemd:
+# Step 6: Start and enable Jenkins service
+- name: Ensure Jenkins service is running and enabled
+  ansible.builtin.systemd:
     name: jenkins
-    enabled: yes
     state: started
-    
-- name: Copy Jenkins configuration
-  copy:
+    enabled: yes
+
+# Step 7: Copy Jenkins plugins list
+- name: Copy Jenkins plugins configuration
+  ansible.builtin.copy:
     src: jenkins_plugins.txt
     dest: /var/lib/jenkins/jenkins_plugins.txt
     owner: jenkins
     group: jenkins
     mode: '0644'
 
+# Step 8: Install Jenkins plugins
 - name: Install Jenkins plugins
-  shell: |
+  ansible.builtin.shell: |
     wget -q -O /tmp/jenkins-cli.jar http://localhost:8080/jnlpJars/jenkins-cli.jar
     cat /var/lib/jenkins/jenkins_plugins.txt | while read plugin; do
         java -jar /tmp/jenkins-cli.jar -s http://localhost:8080/ install-plugin $plugin
     done
     java -jar /tmp/jenkins-cli.jar -s http://localhost:8080/ safe-restart
 
-- name: Copy Jenkins configuration
-  copy:
+# Step 9: Copy Jenkins configuration file
+- name: Copy Jenkins main configuration
+  ansible.builtin.copy:
     src: jenkins_config.xml
     dest: /var/lib/jenkins/config.xml
     owner: jenkins
     group: jenkins
     mode: '0644'
   notify: restart jenkins
-
-
-- name: Restart Jenkins service
-  systemd:
-    name: jenkins
-    state: restarted

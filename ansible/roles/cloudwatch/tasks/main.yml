@@ -1,25 +1,56 @@
 ---
-- name: Install CloudWatch Agent
-  get_url:
-    url: https://s3.amazonaws.com/amazoncloudwatch-agent/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb
-    dest: /tmp/amazon-cloudwatch-agent.deb
+# Step 1: Update package manager cache
+- name: Update package manager cache
+  ansible.builtin.package:
+    name: "*"
+    state: latest
 
-- name: Install the CloudWatch Agent package
-  apt:
-    deb: /tmp/amazon-cloudwatch-agent.deb
+# Step 2: Install dependencies (wget and unzip for CloudWatch Agent)
+- name: Install required dependencies
+  ansible.builtin.package:
+    name:
+      - wget
+      - unzip
     state: present
 
+# Step 3: Download CloudWatch Agent package
+- name: Download CloudWatch Agent package for Debian-based systems
+  ansible.builtin.get_url:
+    url: https://s3.amazonaws.com/amazoncloudwatch-agent/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb
+    dest: /tmp/amazon-cloudwatch-agent.deb
+  when: ansible_facts['os_family'] == "Debian"
+
+- name: Download CloudWatch Agent package for RHEL-based systems
+  ansible.builtin.get_url:
+    url: https://s3.amazonaws.com/amazoncloudwatch-agent/redhat/amd64/latest/amazon-cloudwatch-agent.rpm
+    dest: /tmp/amazon-cloudwatch-agent.rpm
+  when: ansible_facts['os_family'] == "RedHat"
+
+# Step 4: Install CloudWatch Agent package
+- name: Install CloudWatch Agent on Debian-based systems
+  ansible.builtin.apt:
+    deb: /tmp/amazon-cloudwatch-agent.deb
+    state: present
+  when: ansible_facts['os_family'] == "Debian"
+
+- name: Install CloudWatch Agent on RHEL-based systems
+  ansible.builtin.yum:
+    name: /tmp/amazon-cloudwatch-agent.rpm
+    state: present
+  when: ansible_facts['os_family'] == "RedHat"
+
+# Step 5: Deploy CloudWatch Agent configuration
 - name: Deploy CloudWatch Agent configuration
-  template:
+  ansible.builtin.template:
     src: config.json.j2
     dest: /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
     owner: root
     group: root
     mode: '0644'
 
-
-- name: Start and enable CloudWatch Agent
-  systemd:
+# Step 6: Start and enable CloudWatch Agent service
+- name: Start and enable CloudWatch Agent service
+  ansible.builtin.systemd:
     name: amazon-cloudwatch-agent
     enabled: yes
     state: started
