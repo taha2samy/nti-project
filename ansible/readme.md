@@ -20,7 +20,7 @@ This repository contains an Ansible playbook to automate the installation and co
 
 Here’s a more detailed **README.md** file, expanded with additional context, instructions, and useful details for running the Ansible playbook and understanding the Jenkins setup process. This version includes instructions for troubleshooting and possible customizations.
 
-```markdown
+
 # Task 1: Jenkins Setup Process
 
 This documentation outlines the Jenkins setup process using Ansible. The playbook automates the installation and configuration of **Jenkins** on a remote EC2 server. It includes setting up dependencies, installing Jenkins, configuring the necessary plugins, and starting the Jenkins service.
@@ -79,7 +79,7 @@ This command will:
 
 As the playbook runs, monitor the terminal output for progress. You will see the tasks being executed, including any errors if they occur. Common issues might include:
 
-- **SSH Key Issues**: If the private key is incorrect or not accessible, the playbook will fail to connect to the EC2 instance. Ensure that the key path in the **`inventory.ini`** is correct and that the key has the correct permissions (`chmod 400 /path/to/private-key.pem`).
+- **SSH Key Issues**: If the private key is incorrect or not accessible, the playbook will fail to connect to the EC2 instance. Ensure that the key path in the **`inventory.ini`** is correct and that the key has the correct permissions (`chmod 400 key.pem`).
   
 - **Package Installation Issues**: Ensure the target server has access to the internet for downloading dependencies. If the EC2 instance is behind a proxy, you may need to configure proxy settings.
 
@@ -108,6 +108,7 @@ The playbook installs plugins defined in **`jenkins_plugins.txt`**. You can upda
 git
 workflow-aggregator
 docker
+kubernetes
 ```
 
 If you need other plugins, simply add them to the list, and the playbook will install them when executed.
@@ -136,20 +137,3 @@ If you run into issues, here are some common problems and solutions:
 
 ---
 
-## Conclusion
-
-Once the playbook has run successfully, Jenkins will be fully installed and configured on the specified server. You can access Jenkins by navigating to the server’s public IP in your web browser (`http://<JENKINS_EC2_PUBLIC_IP>:8080`).
-
-Feel free to modify the **configuration files** or **playbook tasks** to meet your environment's specific needs. This playbook provides a solid foundation for automating Jenkins setup, but can be extended for more complex requirements.
-
----
-
-*Happy automating! If you encounter any issues or need further customization, feel free to open an issue or reach out for support.*
-```
-
-### Key Enhancements:
-- **Expanded troubleshooting section** to help resolve common issues.
-- Detailed **customization instructions** for users to modify the Jenkins configuration or add plugins.
-- Clearer **instructions for running the playbook**, with additional tips for monitoring the output and troubleshooting errors.
-
-\
