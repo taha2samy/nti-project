@@ -1,4 +1,6 @@
-
+<p align="center">
+  <img src="https://skillicons.dev/icons?i=ansible" style="width:30%;" />
+</p>
 # Ansible Jenkins Setup
 
 This repository contains an Ansible playbook to automate the installation and configuration of Jenkins on a server. It performs tasks like installing dependencies, setting up the Jenkins repository, configuring Jenkins with plugins, and restarting services as needed.
