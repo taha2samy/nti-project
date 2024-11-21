@@ -1,4 +1,3 @@
-```markdown
 # 3-Tier Web Application Architecture with Docker Compose
 
 This project demonstrates a robust and scalable 3-tier web application architecture using Docker Compose and best practices for containerization.  The application consists of a frontend, a backend, and a database, each running in its own isolated container. This approach promotes modularity, maintainability, and efficient resource utilization.
