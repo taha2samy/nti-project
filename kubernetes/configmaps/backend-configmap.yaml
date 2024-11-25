@@ -4,5 +4,5 @@ metadata:
   name: backend-config
   namespace: default
 data:
-  MONGO_URI: "mongodb://admin:admin@mongodb-service:27017/admin"
+  MONGO_URI: "mongodb://admin:admin@mongodb-0.mongodb-service.default.svc.cluster.local:27017,mongodb-1.mongodb-service.default.svc.cluster.local:27017,mongodb-2.mongodb-service.default.svc.cluster.local:27017/?replicaSet=my_cluster"
   APP_PORT: "3001"

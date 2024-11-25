@@ -3,15 +3,10 @@ kind: Deployment
 metadata:
   name: frontend
 spec:
+  replicas: 3
   selector:
     matchLabels:
       app: frontend
-
-  template:
-    metadata:
-      labels:
-        app: frontend
-  replicas: 3
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -25,13 +20,10 @@ spec:
       containers:
         - name: frontend
           image: nti-project-frontend:latest
-
           ports:
             - containerPort: 3000
-          env:
-            - name: REACT_APP_API_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: frontend-config
-                  key: REACT_APP_API_URL
-          imagePullPolicy: IfNotPresaent
+          envFrom:
+            - configMapRef:
+                name: frontend-config
+          imagePullPolicy: IfNotPresent
+

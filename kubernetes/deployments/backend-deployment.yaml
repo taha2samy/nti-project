@@ -17,15 +17,7 @@ spec:
           image: nti-project-backend:latest
           ports:
             - containerPort: 3001
-          env:
-            - name: MONGO_URI
-              valueFrom:
-                configMapKeyRef:
-                  name: backend-config
-                  key: MONGO_URI
-            - name: APP_PORT
-              valueFrom:
-                configMapKeyRef:
-                  name: backend-config
-                  key: APP_PORT
+          envFrom:
+            - configMapRef:
+                name: backend-config
           imagePullPolicy: Never

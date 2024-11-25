@@ -65,6 +65,9 @@ Expose the frontend, backend, and MongoDB services to facilitate communication b
 
 ```bash
 kubectl apply -f kubernetes/services/mongodb-service.yaml
+```
+after mongodb pod running must make them work as cluster 
+```bash
 kubectl apply -f kubernetes/services/backend-service.yaml
 kubectl apply -f kubernetes/services/frontend-service.yaml
 ```

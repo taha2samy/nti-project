@@ -1,32 +1,42 @@
 provider "aws" {
-  region = var.aws_region
+  region = var.region
 }
 
-module "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "3.19.0"
-  name    = "nti-vpc"
-  cidr    = var.vpc_cidr
-  azs     = ["us-east-1a", "us-east-1b"]
-  public_subnets = var.subnets_cidr
+resource "aws_vpc" "main_vpc" {
+  cidr_block = var.vpc_cidr
+  tags = {
+    Name = "MainVPC"
+  }
 }
 
-module "eks" {
-  source      = "./modules/eks"
-  cluster_name = var.eks_cluster_name
-  vpc_id       = module.vpc.vpc_id
-  subnet_ids   = module.vpc.public_subnets
+resource "aws_subnet" "jenkins_server_subnet" {
+  vpc_id                  = aws_vpc.main_vpc.id
+  cidr_block              = var.subnet_cidr_jenkins_server
+  map_public_ip_on_launch = true
+  tags = {
+    Name = "subnet-1"
+  }
 }
 
-module "ec2" {
-  source = "./modules/ec2"
-  ami_id = "ami-0c02fb55956c7d316" # Amazon Linux 2
-  instance_type = var.jenkins_instance_type
-  vpc_id        = module.vpc.vpc_id
-  subnet_id     = module.vpc.public_subnets[1]
+module "ec2_jenkins_server" {
+  source         = "./ec2_jenkins_server"
+  region         = var.region
+  instance_type  = var.instance_type
+  ami_id         = var.ami_id
+  key_name       = var.key_name
+  vpc_id         = aws_vpc.main_vpc.id
+  subnet_id      = aws_subnet.jenkins_server_subnet.id
+
 }
 
-module "ecr" {
-  source = "./modules/ecr"
-  repository_name = "nti-ecr-repo"
+
+module "jenkins_backup" {
+  source        = "./jenkins_backup"
+  region        = var.region
+  instance_id   = module.ec2_jenkins_server.instance_id
+  backup_scheduler= var.backup_scheduler
+  backup_life_cycle=var.backup_scheduler
+
 }
+
+
