@@ -64,6 +64,79 @@ This diagram represents a **MongoDB Cluster on Kubernetes** using StatefulSets, 
 ### Diagram Overview
 This diagram illustrates how the various Kubernetes components interact to form a robust MongoDB cluster, providing high availability and persistent storage.
 
+---
+
+## Backend service
+
+### Overview
+This diagram illustrates a backend service architecture deployed on a Kubernetes cluster. It shows how the backend services interact with a MongoDB service within the cluster, providing a clear visualization of the components and their relationships.
+
+![alt text](image-2.png)
+
+---
+
+### Components:
+1. **Kubernetes Cluster**:
+   - Represents the overall environment where the services and deployments are managed.
+
+2. **Backend Service**:
+   - **Service NodePort (Port 31223)**: Exposes the backend service to external traffic through a NodePort service.
+   - **Deployment Controller**: Manages the deployment of the backend application pods.
+   - **Replica Set**: Ensures high availability by maintaining multiple instances (pods) of the backend server.
+
+3. **MongoDB Headless Service**:
+   - A headless service that allows the backend pods to connect to a MongoDB StatefulSet. This connection enables persistent data storage and retrieval.
+
+---
+
+### Workflow:
+1. **Traffic Flow**:
+   - External requests reach the **Backend NodePort Service** on port 31223.
+   - The NodePort service forwards requests to the **Deployment Controller**, which routes them to one of the **Backend Server Pods**.
+
+2. **Data Interaction**:
+   - Each backend server pod communicates with the **MongoDB Headless Service** to perform database operations.
+
+---
+
+### Key Visual Elements:
+- **Service Connections**: Represented by arrows showing the flow from the endpoint to the service, then to the deployment.
+- **Deployment Relationships**: The deployment controls and manages the replica set of backend pods.
+- **Pod-Database Link**: Backend pods directly interact with the MongoDB headless service, symbolizing data dependencies.
+
+---
+
+## Frontend service
+
+![alt text](image-3.png)
+### Overview
+This diagram illustrates a frontend service architecture deployed on a Kubernetes cluster. It shows how external requests interact with the frontend service pods through a NodePort service, depicting the relationships among the components.
+
+---
+
+### Components:
+1. **Kubernetes Cluster**:
+   - The overall environment where the frontend service components are deployed and managed.
+
+2. **Frontend Service**:
+   - **Service NodePort (Port 30090)**: Exposes the frontend service to external traffic on port 30090, allowing external users to access the application.
+   - **Deployment Controller**: Manages the deployment process for the frontend application.
+   - **Replica Set**: Maintains multiple instances (pods) of the frontend servers, ensuring availability and load balancing.
+
+---
+
+### Workflow:
+1. **Traffic Flow**:
+   - External requests reach the **Frontend NodePort Service** on port 30090.
+   - The NodePort service forwards requests to the **Deployment Controller**, which directs them to one of the **Frontend Server Pods**.
+
+2. **Deployment and Scaling**:
+   - The **Deployment Controller** ensures that the specified number of **Frontend Server Pods** (3 in this case) is always running.
+   - The **Replica Set** provides redundancy, ensuring high availability and distributing traffic among the pods.
+
+---
+
+
 ## Setup Instructions
 
 Follow these steps to deploy the 3-tier Node.js application on Kubernetes:
