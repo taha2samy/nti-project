@@ -162,23 +162,97 @@ kubectl apply -f kubernetes/deployments/mongodb-deployment.yaml
 
 You must create a MongoDB cluster by executing the following command in the command line:
 
-```bash
-kubectl exec -it mongodb-0 -- bash -c "
-mongosh --eval 'rs.initiate({
-  _id: \"my_cluster\",
-  members: [
-    { _id: 0, host: \"mongodb-0.mongodb-service.default.svc.cluster.local:27017\" },
-    { _id: 1, host: \"mongodb-1.mongodb-service.default.svc.cluster.local:27017\" },
-    { _id: 2, host: \"mongodb-2.mongodb-service.default.svc.cluster.local:27017\" }
-  ]
-});' && \
-mongosh --eval 'use admin' && \
-mongosh --eval 'db.createUser({
-  user: \"admin\",
-  pwd: \"admin\",  
-  roles: [{ role: \"root\", db: \"admin\" }]
-});'"
-```
+It seems you're looking for step-by-step instructions on how to run commands interactively within the MongoDB pod using `kubectl exec -it`. Here's how to manually execute each command and interact with the MongoDB shell.
+
+### Step-by-Step Interactive Commands:
+
+1. **Access the MongoDB Pod:**
+
+   First, get into the shell of the MongoDB container:
+
+   ```bash
+   kubectl exec -it mongodb-0 -- sh
+   ```
+
+   This will open an interactive shell inside the container, and you'll be able to run the MongoDB commands manually.
+
+2. **Start `mongosh`:**
+
+   Once you're inside the container, start the MongoDB shell (`mongosh`):
+
+   ```bash
+   mongosh
+   ```
+
+   This will start the MongoDB shell, and you'll see the prompt change to something like:
+
+   ```
+   test>
+   ```
+
+3. **Initialize the Replica Set:**
+
+   In the `mongosh` prompt, run the following command to initialize the replica set:
+
+   ```javascript
+   rs.initiate({
+     _id: "my_cluster",
+     members: [
+       { _id: 0, host: "mongodb-0.mongodb-service.default.svc.cluster.local:27017" },
+       { _id: 1, host: "mongodb-1.mongodb-service.default.svc.cluster.local:27017" },
+       { _id: 2, host: "mongodb-2.mongodb-service.default.svc.cluster.local:27017" }
+     ]
+   });
+   ```
+
+4. **Check the Replica Set Status (Optional):**
+
+   After initializing the replica set, check the status to ensure everything is running correctly:
+
+   ```javascript
+   rs.status();
+   ```
+
+   This will return the status of the replica set and its members.
+
+5. **Switch to the `admin` Database:**
+
+   Now, switch to the `admin` database to create the administrative user:
+
+   ```javascript
+   use admin;
+   ```
+
+6. **Create the `admin` User:**
+
+   Create a user with `root` privileges:
+
+   ```javascript
+   db.createUser({
+     user: "admin",
+     pwd: "admin",
+     roles: [{ role: "root", db: "admin" }]
+   });
+   ```
+
+7. **Exit `mongosh`:**
+
+   Once the user is created, you can exit the `mongosh` shell by typing:
+
+   ```javascript
+   exit;
+   ```
+
+8. **Exit the Pod's Shell:**
+
+   After completing the commands, exit the container's shell with:
+
+   ```bash
+   exit
+   ```
+
+---
+
 
 Then, deploy the backend and frontend services with the following commands:
 
