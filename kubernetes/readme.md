@@ -2,6 +2,9 @@
 
 This repository contains the necessary configurations and Kubernetes manifests to deploy a 3-tier Node.js application on Kubernetes. The application consists of a frontend (React), backend (Node.js), and a MongoDB database. The setup is optimized for scalability, maintainability, and ease of deployment.
 
+## Project Digram
+![alt text](image-1.png)
+
 ## Project Structure
 
 ```plaintext
