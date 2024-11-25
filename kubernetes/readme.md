@@ -163,7 +163,7 @@ kubectl apply -f kubernetes/deployments/mongodb-deployment.yaml
 You must create a MongoDB cluster by executing the following command in the command line:
 
 ```bash
-kubectl exec -it <pod_name> -- bash -c "
+kubectl exec -it mongodb-0 -- bash -c "
 mongosh --eval 'rs.initiate({
   _id: \"my_cluster\",
   members: [
