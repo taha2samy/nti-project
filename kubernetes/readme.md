@@ -19,14 +19,47 @@ kubernetes/
     ├── frontend-service.yaml        # Service configuration for the frontend
     └── mongodb-service.yaml         # Service configuration for MongoDB
 ```
+## Mongodb Cluster 
 
-## Prerequisites
+![alt text](image.png)
+This diagram represents a **MongoDB Cluster on Kubernetes** using StatefulSets, Persistent Volumes, and Headless Services.
 
-Before deploying the application, ensure that you have the following:
+### Components
 
-- **Kubernetes Cluster**: A working Kubernetes cluster (e.g., minikube, GKE, AKS, EKS).
-- **kubectl**: Command-line tool configured to interact with your Kubernetes cluster.
-- **Docker Images**: Built and pushed the Docker images for frontend and backend applications.
+1. **Kubernetes Cluster**: 
+   - The overall Kubernetes environment that houses the services, pods, StatefulSets, and persistent storage.
+
+2. **MongoDB Headless Service**:
+   - A **Headless Service** is used for StatefulSets to ensure each pod has a stable network identity. In this case, the service is named `MongoDB Headless Service`.
+
+3. **StatefulSet Controller**:
+   - The `StatefulSet` controller is responsible for managing the MongoDB Replica Set. It ensures that each pod gets a persistent identity, which is crucial for maintaining the replication and consistency required by MongoDB.
+   - In this diagram, the StatefulSet is named `MongoDB StatefulSet`.
+
+4. **MongoDB Replica Set**:
+   - The **Replica Set** consists of three MongoDB pods:
+     - `mongodb-0-Primary`: The primary replica.
+     - `mongodb-1-Secondary`: A secondary replica.
+     - `mongodb-2-Secondary`: Another secondary replica.
+   - Each pod runs a copy of MongoDB and can be used to serve read or write operations, depending on whether it is the primary or secondary node.
+
+5. **Persistent Storage**:
+   - Each MongoDB pod is associated with a **PersistentVolumeClaim (PVC)**. These claims are used to request storage from Kubernetes to ensure that the data stored by MongoDB is persistent across pod restarts.
+   - The PVCs are named `mongo-pvc-0`, `mongo-pvc-1`, and `mongo-pvc-2`.
+
+### Connections
+
+- **Headless Service to StatefulSet**: 
+  - The **Headless Service** connects to the **StatefulSet**, ensuring that the MongoDB pods can be accessed individually via DNS names (e.g., `mongodb-0.mongodb-headless-service`).
+
+- **StatefulSet to Pods**: 
+  - The **StatefulSet** manages the lifecycle of the MongoDB pods, ensuring the pods are properly scheduled and configured.
+
+- **Pods to Persistent Storage**:
+  - Each MongoDB pod is connected to a corresponding **PersistentVolumeClaim**, ensuring that the pod has persistent storage for storing MongoDB data.
+
+### Diagram Overview
+This diagram illustrates how the various Kubernetes components interact to form a robust MongoDB cluster, providing high availability and persistent storage.
 
 ## Setup Instructions
 
