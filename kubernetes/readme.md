@@ -261,16 +261,7 @@ kubectl apply -f kubernetes/deployments/backend-deployment.yaml
 kubectl apply -f kubernetes/deployments/frontend-deployment.yaml
 ```
 
-
-### 3. Apply Persistent Volume Claim for MongoDB
-
-MongoDB needs persistent storage for data. Apply the persistent volume claim:
-
-```bash
-kubectl apply -f kubernetes/deployments/mongodb-pvc.yaml
-```
-
-### 4. Apply Services
+### 3. Apply Services
 
 Expose the frontend, backend, and MongoDB services to facilitate communication between components:
 
