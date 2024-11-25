@@ -39,6 +39,8 @@ ConfigMaps store configuration data for the backend, frontend, and general appli
 ```bash
 kubectl apply -f kubernetes/configmaps/backend-configmap.yaml
 kubectl apply -f kubernetes/configmaps/frontend-configmap.yaml
+kubectl apply -f kubernetes/configmaps/mongodb-configmap.yaml
+
 ```
 
 ### 2. Apply Deployments
@@ -47,9 +49,35 @@ Next, deploy the backend, frontend, and MongoDB components to Kubernetes:
 
 ```bash
 kubectl apply -f kubernetes/deployments/mongodb-deployment.yaml
+```
+
+You must create a MongoDB cluster by executing the following command in the command line:
+
+```bash
+kubectl exec -it <pod_name> -- bash -c "
+mongosh --eval 'rs.initiate({
+  _id: \"my_cluster\",
+  members: [
+    { _id: 0, host: \"mongodb-0.mongodb-service.default.svc.cluster.local:27017\" },
+    { _id: 1, host: \"mongodb-1.mongodb-service.default.svc.cluster.local:27017\" },
+    { _id: 2, host: \"mongodb-2.mongodb-service.default.svc.cluster.local:27017\" }
+  ]
+});' && \
+mongosh --eval 'use admin' && \
+mongosh --eval 'db.createUser({
+  user: \"admin\",
+  pwd: \"admin\",  
+  roles: [{ role: \"root\", db: \"admin\" }]
+});'"
+```
+
+Then, deploy the backend and frontend services with the following commands:
+
+```bash 
 kubectl apply -f kubernetes/deployments/backend-deployment.yaml
 kubectl apply -f kubernetes/deployments/frontend-deployment.yaml
 ```
+
 
 ### 3. Apply Persistent Volume Claim for MongoDB
 
